@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>hi</title>
+    <title>카카오 결제</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        #btn-kakao {
+            background-color: #FAE300;
+            color: #3C1E1E;
+            font-weight: 800;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<h1>hi</h1>
+<button id="btn-kakao">kakao pay <i class="fa-solid fa-comment"></i></button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+    $(function() {
+        $("#btn-kakao").click(function() {
+            $.ajax({
+                url: '/kakaopay/ready',
+                type: 'get',
+                data: {
+                    item_name: '초코파이',
+                    quantity: "4",
+                    total_amount: "8800",
+                    tax_free_amount: "0",
+                },
+                success: function(response) {
+                    alert(response.next_redirect_pc_url); //kakao payment api에서 알아서 응답해주는 url
+                    location.href = response.next_redirect_pc_url;
+                },
+                error: function(xhr, err, status) {
+                    console.log(xhr.responseText);
+                    alert(err + "이(가) 발생했습니다: " + status);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
