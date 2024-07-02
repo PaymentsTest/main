@@ -1,15 +1,12 @@
 package com.paymentstest.service;
 
-import com.mysql.cj.x.protobuf.Mysqlx;
+import com.paymentstest.dto.KaKaoPayApproveResponseDto;
 import com.paymentstest.dto.KaKaoPayReadyResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -28,9 +25,9 @@ public class KakaoPayService {
         params.put("cid", cid);
         params.put("partner_order_id", "partner_order_id");
         params.put("partner_user_id", "가맹점 partner_user_id");
-        params.put("item_name", "회색바지");
+        params.put("item_name", "주히한테 치킨사주기");
         params.put("quantity", "2000");
-        params.put("total_amount", "200");
+        params.put("total_amount", "20000");
         params.put("tax_free_amount", "0");
         params.put("approval_url", "http://localhost:8080/success.html");
         params.put("cancel_url","http://localhost:8080/cancel.html");
@@ -43,6 +40,22 @@ public class KakaoPayService {
         kakaoResponseReady = restTemplate.postForObject("https://open-api.kakaopay.com/online/v1/payment/ready", request, KaKaoPayReadyResponseDto.class);
 
         return kakaoResponseReady;
+    }
+
+    public KaKaoPayApproveResponseDto kakaoPayApprove(String pgToken){
+        Map<String, String> params = new HashMap<>();
+        params.put("cid", cid);
+        params.put("tid", kakaoResponseReady.getTid());
+        params.put("partner_order_id", "partner_order_id");
+        params.put("partner_user_id", "가맹점 partner_user_id");
+        params.put("pg_token", pgToken);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(params, this.getHeaders());
+
+        RestTemplate restTemplate = new RestTemplate();
+        kakaoResponseReady = restTemplate.postForObject("https://open-api.kakaopay.com/online/v1/payment/approve", request, KaKaoPayReadyResponseDto.class);
+
+        return null;
     }
     private HttpHeaders getHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
