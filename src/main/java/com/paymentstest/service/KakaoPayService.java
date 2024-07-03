@@ -2,8 +2,10 @@ package com.paymentstest.service;
 
 import com.paymentstest.dto.KaKaoPayApproveResponseDto;
 import com.paymentstest.dto.KaKaoPayReadyResponseDto;
+import com.paymentstest.dto.KakaopayCancelResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class KakaoPayService {
@@ -29,11 +32,10 @@ public class KakaoPayService {
         params.put("quantity", "2000");
         params.put("total_amount", "20000");
         params.put("tax_free_amount", "0");
-        params.put("approval_url", "http://localhost:8080/success.html");
+        params.put("approval_url", "http://localhost:8080/kakaopay/approve");
         params.put("cancel_url","http://localhost:8080/cancel.html");
         params.put("fail_url", "http://localhost:8080/fail.html");
 
-        System.out.println(params);
         HttpEntity<Map<String, String>> request = new HttpEntity<>(params, this.getHeaders());
 
         RestTemplate restTemplate = new RestTemplate();
@@ -53,10 +55,30 @@ public class KakaoPayService {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(params, this.getHeaders());
 
         RestTemplate restTemplate = new RestTemplate();
-        kakaoResponseReady = restTemplate.postForObject("https://open-api.kakaopay.com/online/v1/payment/approve", request, KaKaoPayReadyResponseDto.class);
+        KaKaoPayApproveResponseDto kakaoApprove = restTemplate.postForObject("https://open-api.kakaopay.com/online/v1/payment/approve", request, KaKaoPayApproveResponseDto.class);
 
-        return null;
+        return kakaoApprove;
+
     }
+
+
+    public KakaopayCancelResponseDto kakaoPayCancel() {
+        Map<String, String> params = new HashMap<>();
+        params.put("cid", cid);
+        params.put("tid", kakaoResponseReady.getTid());
+        params.put("cancel_amount", "20000");
+        params.put("cancel_tax_free_amount", "0");
+
+        log.info("TID {}", kakaoResponseReady.getTid());
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(params, this.getHeaders());
+        RestTemplate restTemplate = new RestTemplate();
+        KakaopayCancelResponseDto kakaoCancelResponse =
+                restTemplate.postForObject("https://open-api.kakaopay.com/online/v1/payment/cancel", request, KakaopayCancelResponseDto.class);
+
+        return kakaoCancelResponse;
+    }
+
     private HttpHeaders getHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
 

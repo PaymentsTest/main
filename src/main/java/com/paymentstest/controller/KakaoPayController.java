@@ -2,6 +2,7 @@ package com.paymentstest.controller;
 
 import com.paymentstest.dto.KaKaoPayApproveResponseDto;
 import com.paymentstest.dto.KaKaoPayReadyResponseDto;
+import com.paymentstest.dto.KakaopayCancelResponseDto;
 import com.paymentstest.service.KakaoPayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,14 @@ public class KakaoPayController {
         return kakaoPayService.kakaoPayReady();
     }
     @PostMapping("/approve")
-    public KaKaoPayApproveResponseDto kakaopayApprove(@RequestParam String pgToken) {
+    public KaKaoPayApproveResponseDto kakaopayApprove(@RequestParam("pg_token") String pgToken) {
+        log.info("pgToken={}", pgToken);
         return kakaoPayService.kakaoPayApprove(pgToken);
+    }
+
+    @PostMapping("/cancel")
+    public KakaopayCancelResponseDto kakaopayCancel() {
+        return kakaoPayService.kakaoPayCancel();
     }
 
 }

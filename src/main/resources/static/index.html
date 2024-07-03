@@ -17,31 +17,6 @@
     </style>
 </head>
 <body>
-<button id="btn-kakao">kakao pay <i class="fa-solid fa-comment"></i></button>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-<script>
-    $(function() {
-        $("#btn-kakao").click(function() {
-            $.ajax({
-                url: '/kakaopay/ready',
-                type: 'get',
-                data: {
-                    item_name: '초코파이',
-                    quantity: "4",
-                    total_amount: "8800",
-                    tax_free_amount: "0",
-                },
-                success: function(response) {
-                    alert(response.next_redirect_pc_url); //kakao payment api에서 알아서 응답해주는 url
-                    location.href = response.next_redirect_pc_url;
-                },
-                error: function(xhr, err, status) {
-                    console.log(xhr.responseText);
-                    alert(err + "이(가) 발생했습니다: " + status);
-                }
-            });
-        });
-    });
-</script>
+<button id="btn-kakao" onclick="location.href='http://localhost:8080/kakaopay/ready'">kakao pay <i class="fa-solid fa-comment"></i></button>
 </body>
 </html>
