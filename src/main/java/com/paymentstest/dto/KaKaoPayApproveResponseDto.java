@@ -6,9 +6,8 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
 @Getter
+@Builder
 public class KaKaoPayApproveResponseDto {
 
     //결제 고유 번호, 20자

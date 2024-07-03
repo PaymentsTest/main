@@ -4,9 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
-@Data
-@Builder
 @Getter
+@Builder
 public class KaKaoPayReadyRequestDto {
 
     //가맹점 코드, 10자
